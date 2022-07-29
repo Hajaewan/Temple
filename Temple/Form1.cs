@@ -19,7 +19,7 @@ namespace Temple
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-
+            //소고기보다 랍스타가 더 맛있지롱
         }
     }
 }
