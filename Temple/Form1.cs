@@ -11,7 +11,8 @@ namespace Temple
     {
         Bitmap origin1;
         Bitmap origin2;
-
+        Bitmap img1_backup;
+        Bitmap img2_backup;
 
         public Form1()
         {
@@ -29,6 +30,7 @@ namespace Temple
                     Bitmap Copy_origin1 = new Bitmap(origin1.Width, origin1.Height);
                     CopyImage(origin1, ref Copy_origin1);
                     pictureBox1.Image = Copy_origin1;
+                    img1_backup = Copy_origin1;
                     if (pictureBox2.Image == null)
                     {
                         pictureBox2.Image = new Bitmap(origin1.Width, origin1.Height);
@@ -48,10 +50,7 @@ namespace Temple
                     Bitmap Copy_origin2 = new Bitmap(origin2.Width, origin2.Height);
                     CopyImage(origin2, ref Copy_origin2);
                     pictureBox2.Image = Copy_origin2;
-                    if (pictureBox1.Image == null)
-                    {
-                        pictureBox1.Image = new Bitmap(origin1.Width, origin1.Height);
-                    }
+                    img2_backup = Copy_origin2;
                 }
             }
         }
@@ -62,21 +61,8 @@ namespace Temple
             int h = ori.Height;
 
              copy = ori.Clone(new Rectangle(0, 0, w, h), PixelFormat.Format32bppArgb);
-
-            //int val = 0;
-            //for (int i = 0; i < h; ++i)
-            //{
-            //    for (int j = 0; j < w; ++j)
-            //    {
-            //        val = ori.GetPixel(i, j).R;
-            //        copy.SetPixel(i, j, Color.FromArgb(val, val, val));
-            //    }
-            //}
-
         }
         
-
-
         private void Btn_Dilation_Click(object sender, EventArgs e)
         {
             int w = ((Bitmap)pictureBox1.Image).Width;
@@ -211,9 +197,29 @@ namespace Temple
         {
 
         }
+
         private void Btn_Laplacian_Click(object sender, EventArgs e)
         {
 
         }
+
+        private void Btn_Save1_Click(object sender, EventArgs e)
+        {
+            SaveFileDlg dlg = new SaveFileDlg(img1_backup, (Bitmap)(pictureBox1.Image));
+            if (DialogResult.OK == dlg.ShowDialog())
+            {
+                MessageBox.Show("완료");
+            }
+        }
+
+        private void Btn_Save2_Click(object sender, EventArgs e)
+        {
+            SaveFileDlg dlg = new SaveFileDlg(img2_backup, (Bitmap)(pictureBox2.Image));
+            if (DialogResult.OK == dlg.ShowDialog())
+            {
+                MessageBox.Show("완료");
+            }
+        }
+
     }
 }

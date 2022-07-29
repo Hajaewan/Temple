@@ -93,7 +93,7 @@
             this.Btn_Save1.Size = new System.Drawing.Size(66, 18);
             this.Btn_Save1.TabIndex = 3;
             this.Btn_Save1.Text = "파일저장";
-            this.Btn_Save1.UseVisualStyleBackColor = true;
+            this.Btn_Save1.Click += new System.EventHandler(this.Btn_Save1_Click);
             // 
             // Btn_Read2
             // 
@@ -114,7 +114,7 @@
             this.Btn_Save2.Size = new System.Drawing.Size(66, 18);
             this.Btn_Save2.TabIndex = 5;
             this.Btn_Save2.Text = "파일저장";
-            this.Btn_Save2.UseVisualStyleBackColor = true;
+            this.Btn_Save2.Click += new System.EventHandler(this.Btn_Save2_Click);
             // 
             // Btn_Dilation
             // 
