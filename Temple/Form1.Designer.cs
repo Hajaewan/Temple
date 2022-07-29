@@ -54,159 +54,174 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(108, 83);
+            this.pictureBox1.Location = new System.Drawing.Point(94, 39);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(250, 259);
+            this.pictureBox1.Size = new System.Drawing.Size(260, 260);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(528, 83);
+            this.pictureBox2.Location = new System.Drawing.Point(453, 39);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(257, 259);
+            this.pictureBox2.Size = new System.Drawing.Size(260, 260);
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
             // 
             // Btn_Read1
             // 
-            this.Btn_Read1.Location = new System.Drawing.Point(108, 396);
+            this.Btn_Read1.Location = new System.Drawing.Point(94, 317);
+            this.Btn_Read1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Read1.Name = "Btn_Read1";
-            this.Btn_Read1.Size = new System.Drawing.Size(75, 23);
+            this.Btn_Read1.Size = new System.Drawing.Size(66, 18);
             this.Btn_Read1.TabIndex = 2;
             this.Btn_Read1.Text = "파일열기";
             this.Btn_Read1.UseVisualStyleBackColor = true;
             // 
             // Btn_Save1
             // 
-            this.Btn_Save1.Location = new System.Drawing.Point(283, 396);
+            this.Btn_Save1.Location = new System.Drawing.Point(248, 317);
+            this.Btn_Save1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Save1.Name = "Btn_Save1";
-            this.Btn_Save1.Size = new System.Drawing.Size(75, 23);
+            this.Btn_Save1.Size = new System.Drawing.Size(66, 18);
             this.Btn_Save1.TabIndex = 3;
             this.Btn_Save1.Text = "파일저장";
             this.Btn_Save1.UseVisualStyleBackColor = true;
             // 
             // Btn_Read2
             // 
-            this.Btn_Read2.Location = new System.Drawing.Point(528, 396);
+            this.Btn_Read2.Location = new System.Drawing.Point(462, 317);
+            this.Btn_Read2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Read2.Name = "Btn_Read2";
-            this.Btn_Read2.Size = new System.Drawing.Size(75, 23);
+            this.Btn_Read2.Size = new System.Drawing.Size(66, 18);
             this.Btn_Read2.TabIndex = 4;
             this.Btn_Read2.Text = "파일열기";
             this.Btn_Read2.UseVisualStyleBackColor = true;
             // 
             // Btn_Save2
             // 
-            this.Btn_Save2.Location = new System.Drawing.Point(710, 396);
+            this.Btn_Save2.Location = new System.Drawing.Point(621, 317);
+            this.Btn_Save2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Save2.Name = "Btn_Save2";
-            this.Btn_Save2.Size = new System.Drawing.Size(75, 23);
+            this.Btn_Save2.Size = new System.Drawing.Size(66, 18);
             this.Btn_Save2.TabIndex = 5;
             this.Btn_Save2.Text = "파일저장";
             this.Btn_Save2.UseVisualStyleBackColor = true;
             // 
             // Btn_Dilation
             // 
-            this.Btn_Dilation.Location = new System.Drawing.Point(856, 83);
+            this.Btn_Dilation.Location = new System.Drawing.Point(749, 39);
+            this.Btn_Dilation.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Dilation.Name = "Btn_Dilation";
-            this.Btn_Dilation.Size = new System.Drawing.Size(103, 23);
+            this.Btn_Dilation.Size = new System.Drawing.Size(90, 18);
             this.Btn_Dilation.TabIndex = 6;
             this.Btn_Dilation.Text = "Dilation";
             this.Btn_Dilation.UseVisualStyleBackColor = true;
             // 
             // Btn_Erosion
             // 
-            this.Btn_Erosion.Location = new System.Drawing.Point(983, 83);
+            this.Btn_Erosion.Location = new System.Drawing.Point(860, 39);
+            this.Btn_Erosion.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Erosion.Name = "Btn_Erosion";
-            this.Btn_Erosion.Size = new System.Drawing.Size(103, 23);
+            this.Btn_Erosion.Size = new System.Drawing.Size(90, 18);
             this.Btn_Erosion.TabIndex = 7;
             this.Btn_Erosion.Text = "Erosion";
             this.Btn_Erosion.UseVisualStyleBackColor = true;
             // 
             // Btn_Equalization
             // 
-            this.Btn_Equalization.Location = new System.Drawing.Point(856, 132);
+            this.Btn_Equalization.Location = new System.Drawing.Point(749, 87);
+            this.Btn_Equalization.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Equalization.Name = "Btn_Equalization";
-            this.Btn_Equalization.Size = new System.Drawing.Size(103, 23);
+            this.Btn_Equalization.Size = new System.Drawing.Size(90, 18);
             this.Btn_Equalization.TabIndex = 8;
             this.Btn_Equalization.Text = "Equalization";
             this.Btn_Equalization.UseVisualStyleBackColor = true;
             // 
             // Btn_Otsu
             // 
-            this.Btn_Otsu.Location = new System.Drawing.Point(983, 132);
+            this.Btn_Otsu.Location = new System.Drawing.Point(860, 87);
+            this.Btn_Otsu.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Otsu.Name = "Btn_Otsu";
-            this.Btn_Otsu.Size = new System.Drawing.Size(103, 23);
+            this.Btn_Otsu.Size = new System.Drawing.Size(90, 18);
             this.Btn_Otsu.TabIndex = 9;
             this.Btn_Otsu.Text = "Otsu";
             this.Btn_Otsu.UseVisualStyleBackColor = true;
             // 
             // Btn_Guassian
             // 
-            this.Btn_Guassian.Location = new System.Drawing.Point(856, 186);
+            this.Btn_Guassian.Location = new System.Drawing.Point(749, 131);
+            this.Btn_Guassian.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Guassian.Name = "Btn_Guassian";
-            this.Btn_Guassian.Size = new System.Drawing.Size(103, 23);
+            this.Btn_Guassian.Size = new System.Drawing.Size(90, 18);
             this.Btn_Guassian.TabIndex = 10;
             this.Btn_Guassian.Text = "Guassian";
             this.Btn_Guassian.UseVisualStyleBackColor = true;
             // 
             // Btn_Laplacian
             // 
-            this.Btn_Laplacian.Location = new System.Drawing.Point(983, 186);
+            this.Btn_Laplacian.Location = new System.Drawing.Point(860, 131);
+            this.Btn_Laplacian.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Laplacian.Name = "Btn_Laplacian";
-            this.Btn_Laplacian.Size = new System.Drawing.Size(103, 23);
+            this.Btn_Laplacian.Size = new System.Drawing.Size(90, 18);
             this.Btn_Laplacian.TabIndex = 11;
             this.Btn_Laplacian.Text = "Laplacian";
             this.Btn_Laplacian.UseVisualStyleBackColor = true;
             // 
             // Btn_Matching
             // 
-            this.Btn_Matching.Location = new System.Drawing.Point(856, 240);
+            this.Btn_Matching.Location = new System.Drawing.Point(749, 170);
+            this.Btn_Matching.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Btn_Matching.Name = "Btn_Matching";
-            this.Btn_Matching.Size = new System.Drawing.Size(103, 23);
+            this.Btn_Matching.Size = new System.Drawing.Size(90, 18);
             this.Btn_Matching.TabIndex = 12;
             this.Btn_Matching.Text = "Matching";
             this.Btn_Matching.UseVisualStyleBackColor = true;
             // 
             // pictureBox3
             // 
-            this.pictureBox3.Location = new System.Drawing.Point(874, 291);
+            this.pictureBox3.Location = new System.Drawing.Point(771, 211);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(184, 128);
+            this.pictureBox3.Size = new System.Drawing.Size(150, 150);
             this.pictureBox3.TabIndex = 14;
             this.pictureBox3.TabStop = false;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(874, 446);
+            this.label1.Location = new System.Drawing.Point(769, 380);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(31, 15);
+            this.label1.Size = new System.Drawing.Size(25, 12);
             this.label1.TabIndex = 15;
             this.label1.Text = "DX:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(948, 446);
+            this.label2.Location = new System.Drawing.Point(830, 380);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(30, 15);
+            this.label2.Size = new System.Drawing.Size(25, 12);
             this.label2.TabIndex = 16;
             this.label2.Text = "DY:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1012, 445);
+            this.label3.Location = new System.Drawing.Point(886, 380);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(42, 15);
+            this.label3.Size = new System.Drawing.Size(35, 12);
             this.label3.TabIndex = 17;
             this.label3.Text = "Color";
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(108, 475);
+            this.progressBar1.Location = new System.Drawing.Point(94, 380);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(677, 21);
+            this.progressBar1.Size = new System.Drawing.Size(592, 17);
             this.progressBar1.TabIndex = 18;
             // 
             // openFileDialog1
@@ -215,9 +230,9 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1145, 544);
+            this.ClientSize = new System.Drawing.Size(1002, 435);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -236,6 +251,7 @@
             this.Controls.Add(this.Btn_Read1);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
