@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Temple
@@ -25,7 +27,7 @@ namespace Temple
                 {
                     origin1 = new Bitmap(ofd1.FileName);
                     Bitmap Copy_origin1 = new Bitmap(origin1.Width, origin1.Height);
-                    CopyImage(origin1, Copy_origin1);
+                    CopyImage(origin1, ref Copy_origin1);
                     pictureBox1.Image = Copy_origin1;
                     if (pictureBox2.Image == null)
                     {
@@ -44,7 +46,7 @@ namespace Temple
                 {
                     origin2 = new Bitmap(ofd2.FileName);
                     Bitmap Copy_origin2 = new Bitmap(origin2.Width, origin2.Height);
-                    CopyImage(origin2, Copy_origin2);
+                    CopyImage(origin2, ref Copy_origin2);
                     pictureBox2.Image = Copy_origin2;
                     if (pictureBox1.Image == null)
                     {
@@ -54,21 +56,26 @@ namespace Temple
             }
         }
 
-        private void CopyImage(Bitmap ori, Bitmap copy)
+        private void CopyImage(Bitmap ori, ref Bitmap copy)
         {
             int w = ori.Width;
             int h = ori.Height;
-            int val = 0;
-            for (int i = 0; i < h; ++i)
-            {
-                for (int j = 0; j < w; ++j)
-                {
-                    val = ori.GetPixel(i, j).R;
-                    copy.SetPixel(i, j, Color.FromArgb(val, val, val));
-                }
-            }
+
+             copy = ori.Clone(new Rectangle(0, 0, w, h), PixelFormat.Format32bppArgb);
+
+            //int val = 0;
+            //for (int i = 0; i < h; ++i)
+            //{
+            //    for (int j = 0; j < w; ++j)
+            //    {
+            //        val = ori.GetPixel(i, j).R;
+            //        copy.SetPixel(i, j, Color.FromArgb(val, val, val));
+            //    }
+            //}
 
         }
+        
+
 
         private void Btn_Dilation_Click(object sender, EventArgs e)
         {
@@ -135,6 +142,78 @@ namespace Temple
             pictureBox2.Refresh();
         }
 
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (pictureBox1.Image != null)
+            {
+                double ratio = (double)512 / (double)260;
+                label1.Text = $" x : {(int)((double)e.X * ratio)}";
+                label2.Text = $" Y : {(int)((double)e.Y * ratio)}";
+                int newX = (int)((double)e.X * ratio);
+                int newY = (int)((double)e.Y * ratio);
+                Bitmap zoomImage = new Bitmap(150, 150);
+                Bitmap originImage = (Bitmap)pictureBox1.Image;
+                label3.Text = $"ColorIndex : {originImage.GetPixel(newX, newY).R}";
 
+                Task t1 = Task.Run(() =>
+                {
+                    for (int i = -75; i < 75; ++i)
+                        for (int j = -75; j < 75; ++j)
+                        {
+                            if ((newX + i) < 0 || (newY + j) < 0 || (newY + j) >= 512 || (newX + i) >= 512)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                zoomImage.SetPixel(75 + i, 75 + j, originImage.GetPixel(newX + i, newY + j));
+                            }
+                        }
+                });
+                Task.WaitAll(t1);
+                pictureBox3.Image = zoomImage;
+            }
+        }
+
+        private void pictureBox2_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (pictureBox2.Image != null)
+            {
+                double ratio = (double)512 / (double)260;
+                label1.Text = $" x : {(int)((double)e.X * ratio)}";
+                label2.Text = $" Y : {(int)((double)e.Y * ratio)}";
+                int newX = (int)((double)e.X * ratio);
+                int newY = (int)((double)e.Y * ratio);
+                Bitmap zoomImage = new Bitmap(150, 150);
+                Bitmap originImage = (Bitmap)pictureBox2.Image;
+                label3.Text = $"ColorIndex : {originImage.GetPixel(newX, newY).R}";
+                Task t2 = Task.Run(() =>
+                {
+                    for (int i = -75; i < 75; ++i)
+                        for (int j = -75; j < 75; ++j)
+                        {
+                            if ((newX + i) < 0 || (newY + j) < 0 || (newY + j) >= 512 || (newX + i) >= 512)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                zoomImage.SetPixel(75 + i, 75 + j, originImage.GetPixel(newX + i, newY + j));
+                            }
+                        }
+                });
+                Task.WaitAll(t2);
+                pictureBox3.Image = zoomImage;
+            }
+        }
+
+        private void Btn_Guassian_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void Btn_Laplacian_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
