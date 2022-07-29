@@ -22,6 +22,7 @@ namespace Temple
             //재완씨 바보
             Console.WriteLine();
             //이렇게 하다가ㅇㅁ너엄//
+            //asdjnf
         }
     }
 }
