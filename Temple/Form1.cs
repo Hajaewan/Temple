@@ -19,7 +19,9 @@ namespace Temple
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            //소고기보다 랍스타가 더 맛있지롱
+            //재완씨 바보
+            Console.WriteLine();
+            //이렇게 하다가ㅇㅁ너엄//
         }
     }
 }
