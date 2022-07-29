@@ -17,13 +17,5 @@ namespace Temple
             InitializeComponent();
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            //재완씨 바보
-            Console.WriteLine();
-            //이렇게 하다가ㅇㅁ너엄//
-            //asdjnf
-            //asdnjfbasjbkjags
-        }
     }
 }
