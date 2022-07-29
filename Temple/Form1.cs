@@ -20,6 +20,7 @@ namespace Temple
         private void pictureBox2_Click(object sender, EventArgs e)
         {
             //asdfasdf
+            //재완 생일 축하 빰빰
         }
     }
 }
