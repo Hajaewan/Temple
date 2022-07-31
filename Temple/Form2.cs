@@ -12,9 +12,13 @@ namespace Temple
 {
     public partial class Form2 : Form
     {
-        public Form2()
+        private Form1 parent = null;
+        public Bitmap Bitmap { set { pictureBox1.Image = value; } }
+        public Form2(Bitmap bmp)
         {
             InitializeComponent();
+            Bitmap = bmp;
+
         }
     }
 }
