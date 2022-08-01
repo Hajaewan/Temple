@@ -434,6 +434,9 @@ namespace Temple
                             }
                         }
                     pictureBox1.Image = zoomImage;
+                    pt.X = pt.X + (newX - zoomSize / 2);
+                    pt.Y = pt.Y + (newX - zoomSize / 2);
+
                 }
                 else if (e.Button == MouseButtons.Right)     // 축소
                 {
