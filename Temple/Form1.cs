@@ -383,7 +383,7 @@ namespace Temple
             Bitmap zoomImage = new Bitmap(260, 260);
             Bitmap originImage = (Bitmap)pictureBox1.Image;
             Bitmap RectIndex = originImage.Clone(new Rectangle(0, 0, originImage.Width, originImage.Height), PixelFormat.Format32bppArgb);
-            Color G = Color.FromArgb(255, 255, 255, 255);
+            Color G = Color.FromArgb( 255, 0, 0);
 
             if (ZoomImageRectIndex == null)
             {
@@ -446,6 +446,181 @@ namespace Temple
                 ZoomImageRectIndex.Bitmap = RectIndex;
             }
 
+        }
+
+        private void Btn_Equalization_Click(object sender, EventArgs e)
+        {
+            int row = ((Bitmap)pictureBox1.Image).Height;
+            int col = ((Bitmap)pictureBox1.Image).Width;
+            //filename = "Equalization.bmp";
+            Bitmap bmp = new Bitmap(row, col);
+            double[] histogram = new double[256];
+            int[] sum = new int[256];
+            int[] New = new int[256];
+            double size = row * col;
+            for (int i = 0; i < row; ++i)
+            {
+                for (int j = 0; j < col; ++j)
+                {
+                    histogram[((Bitmap)pictureBox1.Image).GetPixel(i, j).R] = histogram[((Bitmap)pictureBox1.Image).GetPixel(i, j).R] + 1;
+                }
+            }
+
+            for (int i = 0; i < 256; ++i)
+            {
+                if (i == 0)
+                {
+                    sum[i] = (int)(histogram[i]);
+                }
+                else
+                {
+                    sum[i] = (int)(sum[i - 1] + histogram[i]);
+                }
+            }
+            /*double scal = 255.0 / size;*/
+            for (int i = 0; i < 256; ++i)
+            {
+                New[i] = (int)(sum[i] * (255.0 / size));
+            }
+            for (int i = 0; i < row; ++i)
+            {
+                for (int j = 0; j < col; ++j)
+                {
+                    byte color = (byte)New[((Bitmap)pictureBox1.Image).GetPixel(i, j).R];
+                    bmp.SetPixel(i, j, Color.FromArgb(color, color, color));
+                }
+            }
+
+            pictureBox2.Image = bmp;
+        }
+
+        private void Btn_Otsu_Click(object sender, EventArgs e)
+        {
+            int row = pictureBox1.Image.Height;
+            int col = pictureBox1.Image.Width;
+            //filename = "Otsu.bmp";
+            Bitmap bmp = new Bitmap(row, col);
+            double[] histogram = new double[256];
+            double sum = 0;
+            double P1 = 0;
+            double P2 = 0;
+            double Mg = 0;
+            double M1 = 0;
+            double M2 = 0;
+            double MS = 0;
+            double Ob2 = 0;
+            double max = 0;
+            int t = 0;
+            double size = row * col;
+
+            for (int i = 0; i < row; ++i)
+            {
+                for (int j = 0; j < col; ++j)
+                {
+                    histogram[((Bitmap)pictureBox1.Image).GetPixel(i, j).R]++;
+                }
+            }
+
+            for (int i = 0; i < 256; ++i)
+            {
+                Mg += histogram[i] * i;
+            }
+            for (int i = 0; i < 256; ++i)
+            {
+                sum += histogram[i];
+                MS += histogram[i] * i;
+                P1 = sum / size;
+                P2 = 1 - P1;
+                M1 = MS / sum;
+                M2 = (Mg - MS) / (size - sum);
+                Ob2 = (P1 * (M1 - (Mg / size)) * (M1 - (Mg / size))) + (P2 * (M2 - (Mg / size)) * (M2 - (Mg / size)));
+                if (max < Ob2)
+                {
+                    max = Ob2;
+                    t = i;
+                }
+            }
+            for (int i = 0; i < row; ++i)
+            {
+                for (int j = 0; j < col; ++j)
+                {
+                    if (((Bitmap)pictureBox1.Image).GetPixel(i, j).R >= t)
+                    {
+                        bmp.SetPixel(i, j, Color.FromArgb(255, 255, 255));
+                    }
+                    else if (((Bitmap)pictureBox1.Image).GetPixel(i, j).R < t)
+                    {
+                        bmp.SetPixel(i, j, Color.FromArgb(0, 0, 0));
+
+                    }
+                }
+            }
+            pictureBox2.Image = bmp;
+        }
+
+        private void Btn_Matching_Click(object sender, EventArgs e)
+        {
+            int min = 2100000000;
+            int Templatewidth = ((Bitmap)pictureBox1.Image).Width;
+            int Templateheight = ((Bitmap)pictureBox1.Image).Height;
+            int mewidth = ((Bitmap)pictureBox2.Image).Height;
+            int meheight = ((Bitmap)pictureBox2.Image).Width;
+            //filename = "Equalization.bmp";
+            Bitmap bmp = new Bitmap(mewidth, meheight);
+            byte[] data = new byte[mewidth * meheight];
+            for (int i = 0; i < mewidth; i++)
+            {
+                for (int j = 0; j < meheight; ++j)
+                {
+                    bmp.SetPixel(i, j, ((Bitmap)pictureBox2.Image).GetPixel(i, j));
+                    data[j * mewidth + i] = ((Bitmap)pictureBox2.Image).GetPixel(i, j).R;
+                }
+            }
+            byte[] Temp = new byte[Templatewidth * Templateheight];
+            for (int i = 0; i < Templatewidth; i++)
+            {
+                for (int j = 0; j < Templateheight; ++j)
+                {
+                    Temp[j * Templatewidth + i] = ((Bitmap)pictureBox1.Image).GetPixel(i, j).R;
+                }
+            }
+            int sum = 0;
+            int row = 0;
+            int col = 0;
+
+            for (int y = 0; y < mewidth - Templatewidth; ++y)
+            {
+                for (int x = 0; x < meheight - Templateheight; ++x)
+                {
+                    for (int i = 0; i < Templatewidth; ++i)
+                    {
+                        for (int j = 0; j < Templateheight; ++j)
+                        {
+                            sum += (data[(x + j) * mewidth + (y + i)] - Temp[j * Templatewidth + i]) * (data[(x + j) * mewidth + (y + i)] - Temp[j * Templatewidth + i]);
+                        }
+                    }
+                    if (sum < min)
+                    {
+                        min = sum;
+                        row = x;
+                        col = y;
+                    }
+                    sum = 0;
+                }
+            }
+
+            MessageBox.Show($"{row},{col}");
+            for (int y = row; y < row + Templateheight; ++y)
+            {
+                for (int x = col; x < col + Templatewidth; ++x)
+                {
+                    if (y == row || y == (row + Templateheight - 1) || x == col || x == (col + Templatewidth - 1))
+                        bmp.SetPixel((y), (x), Color.FromArgb(255, 0, 0));
+
+                }
+            }
+
+            pictureBox2.Image = bmp;
         }
     }
 
