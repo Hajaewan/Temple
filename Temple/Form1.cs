@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+///////// 220801 20:54 YTJ 해결해야할 사항  1. 좌표의 오차   2. picturebox1 or picruebox2 하나만 열었을 시 해당영역 마우스 오류   3. 축소 시 picture 원 사이즈로의 복원  4.매칭 오류
 namespace Temple
 {
     public partial class Form1 : Form
@@ -14,9 +14,11 @@ namespace Temple
         Bitmap img1_backup;
         Bitmap img2_backup;
 
-        private int ClickCount = 0;
-        private double zoomRatio = 1.0;
+        private double zoomRatio1 = 1.0;
+        private double zoomRatio2 = 1.0;
+
         private Form2 ZoomImageRectIndex = null;
+
         Point pt = new Point(0, 0);
         public Form1()
         {
@@ -31,25 +33,15 @@ namespace Temple
 
                 if (ofd1.ShowDialog() == DialogResult.OK)
                 {
-                    //file_path = ofd1.FileName;
-                    //string file_name = Path.GetFileName(file_path);
-                    //pictureBox1.Load(file_path);
-                    //Bitmap originImage = (Bitmap)pictureBox1.Image;
-                    //Bitmap originImage_copy = CopyImage(originImage);
-                    //if (pictureBox2.Image == null)
-                    //{
-                    //    pictureBox2.Image = new Bitmap(originImage.Width, originImage.Height);
-                    //}
-
                     origin1 = new Bitmap(ofd1.FileName);                            /////////20220801_09:06 hjw 수정
                     Bitmap Copy_origin1 = new Bitmap(origin1.Width, origin1.Height);
                     CopyImage(origin1, ref Copy_origin1);
                     pictureBox1.Image = Copy_origin1;
                     img1_backup = Copy_origin1;
-                    if (pictureBox2.Image == null)
-                    {
-                        pictureBox2.Image = new Bitmap(origin1.Width, origin1.Height);
-                    }
+                    //if (pictureBox2.Image == null)                 ///////////220801_19:42 YTJ picture1 OR picture2가 열리지 않았을 경우 해당 영역 위에 마우스가 지나갈시 오류 --> 주석처리하면 해결됨
+                    //{
+                    //    pictureBox2.Image = new Bitmap(origin1.Width, origin1.Height);
+                    //}
                 }
             }
         }
@@ -65,16 +57,15 @@ namespace Temple
                     //string file_name = Path.GetFileName(file_path);
                     //pictureBox2.Load(file_path);
 
-
                     origin2 = new Bitmap(ofd2.FileName);                            ////20220801_09:07 hjw 수정
                     Bitmap Copy_origin2 = new Bitmap(origin2.Width, origin2.Height);
                     CopyImage(origin2, ref Copy_origin2);
                     pictureBox2.Image = Copy_origin2;
                     img2_backup = Copy_origin2;
-                    if (pictureBox1.Image == null)
-                    {
-                        pictureBox1.Image = new Bitmap(origin1.Width, origin1.Height);
-                    }
+                    //if (pictureBox1.Image == null)         ///////////220801_19:42 YTJ picture1 OR picture2가 열리지 않았을 경우 해당 영역 위에 마우스가 지나갈시 오류 --> 주석처리하면 해결됨
+                    //{
+                    //    pictureBox1.Image = new Bitmap(origin2.Width, origin2.Height);
+                    //}
                 }
             }
         }
@@ -121,7 +112,7 @@ namespace Temple
             {
                 for (int j = 0; j < bm.Width; ++j)
                 {
-                    m = (byte)(C[512 * i + j] + 128);
+                    m = (byte)(C[bm.Height * i + j] + 128);
                     Color G = Color.FromArgb(255, m, m, m);
                     bm.SetPixel(i, j, G);
                 }
@@ -170,7 +161,7 @@ namespace Temple
             {
                 for (int j = 0; j < bm.Width; ++j)
                 {
-                    m = C[512 * i + j];
+                    m = C[bm.Height * i + j];
                     Color G = Color.FromArgb(255, m, m, m);
                     bm.SetPixel(i, j, G);
                 }
@@ -193,15 +184,6 @@ namespace Temple
 
             copy = ori.Clone(new Rectangle(0, 0, w, h), PixelFormat.Format32bppArgb);
 
-            //int val = 0;
-            //for (int i = 0; i < h; ++i)
-            //{
-            //    for (int j = 0; j < w; ++j)
-            //    {
-            //        val = ori.GetPixel(i, j).R;
-            //        copy.SetPixel(i, j, Color.FromArgb(val, val, val));
-            //    }
-            //}
         }
 
         private void Btn_Dilation_Click(object sender, EventArgs e)
@@ -209,7 +191,8 @@ namespace Temple
             int w = ((Bitmap)pictureBox1.Image).Width;
             int h = ((Bitmap)pictureBox1.Image).Height;
             InitProgressBar(w);
-
+            Bitmap Copyimg = new Bitmap(w, h);
+            CopyImage((Bitmap)pictureBox1.Image, ref Copyimg);
             for (int i = 0; i < w * h; ++i)
             {
                 progressBar1.Value = (i / h) + 1;
@@ -234,8 +217,10 @@ namespace Temple
                         }
                     }
                 }
-                ((Bitmap)pictureBox2.Image).SetPixel(i % w, i / w, Color.FromArgb(max, max, max));
+
+                (Copyimg).SetPixel(i % w, i / w, Color.FromArgb(max, max, max));
             }
+            pictureBox2.Image = Copyimg;
             pictureBox2.Refresh();
         }
 
@@ -244,7 +229,8 @@ namespace Temple
             int w = ((Bitmap)pictureBox1.Image).Width;
             int h = ((Bitmap)pictureBox1.Image).Height;
             InitProgressBar(w);
-
+            Bitmap Copyimg = new Bitmap(w, h);
+            CopyImage((Bitmap)pictureBox1.Image, ref Copyimg);
             for (int i = 0; i < w * h; ++i)
             {
                 progressBar1.Value = (i / h) + 1;
@@ -269,8 +255,9 @@ namespace Temple
                         }
                     }
                 }
-                ((Bitmap)pictureBox2.Image).SetPixel(i % w, i / w, Color.FromArgb(min, min, min));
+                 (Copyimg).SetPixel(i % w, i / w, Color.FromArgb(min, min, min));
             }
+            pictureBox2.Image = Copyimg;
             pictureBox2.Refresh();
         }
 
@@ -278,31 +265,34 @@ namespace Temple
         {
             if (pictureBox1.Image != null)
             {
-                Bitmap PictureBox1Image = (Bitmap)pictureBox1.Image;
+                double ratio = (double)pictureBox1.Image.Width / (double)260;
 
-                double ratio = (double)origin1.Width / (double)260;
-                label1.Text = $" x : {(int)((double)e.X * ratio)}";
-                label2.Text = $" Y : {(int)((double)e.Y * ratio)}";
-                int newX = (int)((double)e.X * ratio);
-                int newY = (int)((double)e.Y * ratio);
-             
-                Bitmap zoomImage = new Bitmap(40, 40);
+                int newX = (int)(((double)e.X * pictureBox1.Image.Width / (double)pictureBox1.Width) + pt.X);
+                int newY = (int)(((double)e.Y * pictureBox1.Image.Height / (double)pictureBox1.Height) + pt.Y);
 
-                label3.Text = $"ColorIndex : {origin1.GetPixel(newX, newY).R}";
 
-                for (int i = -20; i < 20; ++i)
-                    for (int j = -20; j < 20; ++j)
-                    {
-                        if ((newX + i) < 0 || (newY + j) < 0 || (newY + j) >= PictureBox1Image.Height || (newX + i) >= PictureBox1Image.Width)
+                if (newY < 512 && newX < 512 && newY > 0 && newX > 0)                         ////////220801_19:56 YTJ 예외처리 사항 추가
+                {
+                    label1.Text = $" x : {(int)((double)newX)}";
+                    label2.Text = $" Y : {(int)((double)newY)}";
+                    Bitmap zoomImage = new Bitmap(40, 40);
+
+                    label3.Text = $"ColorIndex : {origin1.GetPixel(newX, newY).R}";
+
+                    for (int i = -20; i < 20; ++i)
+                        for (int j = -20; j < 20; ++j)
                         {
-                            continue;
+                            if ((newX + i) < 0 || (newY + j) < 0 || (newY + j) >= origin1.Width || (newX + i) >= origin1.Height)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                zoomImage.SetPixel(20 + i, 20 + j, origin1.GetPixel(newX + i, newY + j));
+                            }
                         }
-                        else
-                        {
-                            zoomImage.SetPixel(20 + i, 20 + j, origin1.GetPixel(newX + i, newY + j));
-                        }
-                    }
-                pictureBox3.Image = zoomImage;
+                    pictureBox3.Image = zoomImage;
+                }
             }
         }
 
@@ -310,28 +300,31 @@ namespace Temple
         {
             if (pictureBox2.Image != null)
             {
-                double ratio = (double)origin1.Width / (double)260;
-                label1.Text = $" x : {(int)((double)e.X * ratio)}";
-                label2.Text = $" Y : {(int)((double)e.Y * ratio)}";
-                int newX = (int)((double)e.X * ratio);
-                int newY = (int)((double)e.Y * ratio);
-                Bitmap zoomImage = new Bitmap(40, 40);
-                label3.Text = $"ColorIndex : {origin1.GetPixel(newX, newY).R}";
+                double ratio = (double)pictureBox2.Width / (double)260;
+                int newX = (int)(((double)e.X * pictureBox2.Image.Width / (double)pictureBox2.Width) + pt.X);
+                int newY = (int)(((double)e.Y * pictureBox2.Image.Height / (double)pictureBox2.Height) + pt.Y);
 
-                for (int i = -20; i < 20; ++i)
-                    for (int j = -20; j < 20; ++j)
-                    {
-                        if ((newX + i) < 0 || (newY + j) < 0 || (newY + j) >= 512 || (newX + i) >= 512)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            zoomImage.SetPixel(20 + i, 20 + j, origin1.GetPixel(newX + i, newY + j));
-                        }
-                    }
+                if (newY < 512 && newX < 512 && newY > 0 && newX > 0)                  ////////220801_19:56 YTJ 예외처리 사항 추가
+                {
+                    label1.Text = $" x : {(int)((double)newX)}";
+                    label2.Text = $" Y : {(int)((double)newY)}";
+                    Bitmap zoomImage = new Bitmap(40, 40);
+                    label3.Text = $"ColorIndex : {origin2.GetPixel(newX, newY).R}";
 
-                pictureBox3.Image = zoomImage;
+                    for (int i = -20; i < 20; ++i)
+                        for (int j = -20; j < 20; ++j)
+                        {
+                            if ((newX + i) < 0 || (newY + j) < 0 || (newY + j) >= origin2.Width || (newX + i) >= origin2.Height)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                zoomImage.SetPixel(20 + i, 20 + j, origin2.GetPixel(newX + i, newY + j));
+                            }
+                        }
+                    pictureBox3.Image = zoomImage;
+                }
             }
         }
 
@@ -341,31 +334,33 @@ namespace Temple
             //Bitmap originImage_copy = CopyImage(originImage);   
             //20220801_09:21 hjw 수정
 
-            int w = ((Bitmap)pictureBox1.Image).Width;
-            int h = ((Bitmap)pictureBox1.Image).Height;
-            byte[] C = new byte[w * h];
+            int w = pictureBox1.Image.Width;
+            int h = pictureBox1.Image.Height;
+            Bitmap Copyimg = new Bitmap(w, h);
+            CopyImage((Bitmap)pictureBox1.Image, ref Copyimg);
             byte[] C2 = new byte[w * h];
             InitProgressBar(w);
             MakeBuf((Bitmap)pictureBox1.Image, C2);
-            GaussianFilter((Bitmap)pictureBox2.Image, C2);
-            pictureBox2.Image = (Bitmap)pictureBox2.Image;
-        }
+            GaussianFilter((Bitmap)Copyimg, C2);
+            pictureBox2.Image = (Bitmap)Copyimg;
 
+        }
         private void Btn_Laplacian_Click(object sender, EventArgs e)
         {
             //Bitmap originImage = (Bitmap)pictureBox1.Image;
             //Bitmap originImage_copy = CopyImage(originImage);
             //20220801_09:21 hjw 수정
 
-            int w = ((Bitmap)pictureBox1.Image).Width;
-            int h = ((Bitmap)pictureBox1.Image).Height;
-            byte[] C = new byte[w * h];
+            int w = pictureBox1.Image.Width;
+            int h = pictureBox1.Image.Height;
+            Bitmap Copyimg = new Bitmap(w, h);
+            CopyImage((Bitmap)pictureBox1.Image, ref Copyimg);
             byte[] C2 = new byte[w * h];
             InitProgressBar(w);
 
             MakeBuf((Bitmap)pictureBox1.Image, C2);
-            LaplacianFilter((Bitmap)pictureBox2.Image, C2);
-            pictureBox2.Image = (Bitmap)pictureBox2.Image;
+            LaplacianFilter((Bitmap)Copyimg, C2);
+            pictureBox2.Image = (Bitmap)Copyimg;
         }
 
         private void Btn_Save1_Click(object sender, EventArgs e)
@@ -386,93 +381,12 @@ namespace Temple
             }
         }
 
-        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
-        {
-            pictureBox1.Image = img1_backup; //20220801_09:08 hjw 수정
-
-            double ratio = (double)512 / (double)260;
-            int newX = (int)((double)e.X * ratio)  ;
-            int newY = (int)((double)e.Y * ratio) ;
-            Bitmap originImage = (Bitmap)pictureBox1.Image;
-            Bitmap RectIndex = originImage.Clone(new Rectangle(0, 0, originImage.Width, originImage.Height), PixelFormat.Format32bppArgb);
-            Color G = Color.FromArgb(255, 0, 0);
-
-            if (ZoomImageRectIndex == null)
-            {
-                if (ClickCount == 0)
-                {
-                    ZoomImageRectIndex = new Form2(RectIndex);
-                    ZoomImageRectIndex.Owner = this;
-                    ZoomImageRectIndex.Show();
-                    ++ClickCount;
-                }
-            }
-
-            else if (ZoomImageRectIndex != null) // Picture1 2번째 누를때 부터 
-            {
-                if (e.Button == MouseButtons.Left)     // 확대
-                {
-                    zoomRatio *= 0.95;
-                    int zoomSize = (int)(zoomRatio * 260);
-                    Bitmap zoomImage = new Bitmap(zoomSize, zoomSize);
-                    for (int i = -zoomSize/2; i < zoomSize/2; ++i)
-                        for (int j = -zoomSize/2; j < zoomSize/2; ++j)
-                        {
-                            if (((newX + (zoomRatio * i)) > originImage.Width) || ((newY + (zoomRatio * j))) > originImage.Height || ((newX + (zoomRatio * i)) < 0) || ((newY + (zoomRatio * j))) < 0)
-                            {
-                                continue;
-                            }
-                          
-                            else
-                            {
-                                zoomImage.SetPixel(zoomSize/2 + i, zoomSize/2 + j, originImage.GetPixel((int)(newX + (zoomRatio * i)), (int)(newY + (zoomRatio * j)))); // 줌이미지
-                            }
-
-                            if ((-zoomSize/2 <= i && i < zoomSize/2) && (j == -zoomSize/2 || j == zoomSize/2-1) || (-zoomSize/2 <= j && j < zoomSize/2) && (i == -zoomSize/2 || i == zoomSize/2-1))
-                            {
-                                RectIndex.SetPixel((int)(double)(newX + (zoomRatio * i)), (int)(double)(newY + (zoomRatio * j)), G);   // 원본에 사각 인덱스 표시
-                            }
-                        }
-                    pictureBox1.Image = zoomImage;
-                    pt.X = pt.X + (newX - zoomSize / 2);
-                    pt.Y = pt.Y + (newX - zoomSize / 2);
-
-                }
-                else if (e.Button == MouseButtons.Right)     // 축소
-                {
-                    zoomRatio *= 1.05;
-                    int zoomSize = (int)(zoomRatio * 260);
-                    Bitmap zoomImage = new Bitmap(zoomSize, zoomSize);
-                    for (int i = -zoomSize/2; i < zoomSize/2; ++i)
-                        for (int j = -zoomSize/2; j < zoomSize/2; ++j)
-                        {
-                            if (((newX + (zoomRatio * i)) < 0) || ((newY + (zoomRatio * j))) < 0 || ((newX + (zoomRatio * i)) >= originImage.Width) || ((newY + (zoomRatio * j))) >= originImage.Height)
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                zoomImage.SetPixel(zoomSize/2 + i, zoomSize/2 + j, originImage.GetPixel((int)(newX + (zoomRatio * i)), (int)(newY + (zoomRatio * j)))); // 줌이미지
-                            }
-                            if ((-zoomSize/2 <= i && i < zoomSize/2) && (j == -zoomSize/2 || j == zoomSize/2-1) || (-zoomSize/2 <= j && j < zoomSize/2) && (i == -zoomSize/2 || i == zoomSize/2-1))
-                            {
-                                RectIndex.SetPixel((int)(double)(newX + (zoomRatio * i)), (int)(double)(newY + (zoomRatio * j)), G);   // 원본에 사각 인덱스 표시
-                            }
-                        }
-
-                    pictureBox1.Image = zoomImage;
-                }
-                ZoomImageRectIndex.Bitmap = RectIndex;
-            }
-        }
-       
         private void Btn_Equalization_Click(object sender, EventArgs e)
         {
             int row = ((Bitmap)pictureBox1.Image).Height;
             int col = ((Bitmap)pictureBox1.Image).Width;
             InitProgressBar(col);
 
-            //filename = "Equalization.bmp";
             Bitmap bmp = new Bitmap(row, col);
             double[] histogram = new double[256];
             int[] sum = new int[256];
@@ -590,17 +504,18 @@ namespace Temple
             int mewidth = ((Bitmap)pictureBox2.Image).Height;
             int meheight = ((Bitmap)pictureBox2.Image).Width;
             InitProgressBar(mewidth - Templatewidth);
-            //filename = "Equalization.bmp";
+
             Bitmap bmp = new Bitmap(mewidth, meheight);
             byte[] data = new byte[mewidth * meheight];
             for (int i = 0; i < mewidth; i++)
             {
                 for (int j = 0; j < meheight; ++j)
                 {
-                    bmp.SetPixel(i, j, ((Bitmap)pictureBox2.Image).GetPixel(i, j));
-                    data[j * mewidth + i] = ((Bitmap)pictureBox2.Image).GetPixel(i, j).R;
+                    bmp.SetPixel(i, j, (origin2).GetPixel(i, j));
+                    data[j * mewidth + i] = (origin2).GetPixel(i, j).R;
                 }
             }
+
             byte[] Temp = new byte[Templatewidth * Templateheight];
             for (int i = 0; i < Templatewidth; i++)
             {
@@ -634,18 +549,15 @@ namespace Temple
                     sum = 0;
                 }
             }
-
             MessageBox.Show($"{row},{col}");
             for (int y = row; y < row + Templateheight; ++y)
             {
                 for (int x = col; x < col + Templatewidth; ++x)
                 {
                     if (y == row || y == (row + Templateheight - 1) || x == col || x == (col + Templatewidth - 1))
-                        bmp.SetPixel((y), (x), Color.FromArgb(255, 0, 0));
-
+                        bmp.SetPixel((x), (y), Color.FromArgb(255, 0, 0));
                 }
             }
-
             pictureBox2.Image = bmp;
         }
 
@@ -654,6 +566,163 @@ namespace Temple
             progressBar1.Maximum = w;
             progressBar1.Value = 0;
         }
-    }
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            int newX = (int)(((double)e.X * pictureBox1.Image.Width / (double)pictureBox1.Width) + pt.X);
+            int newY = (int)(((double)e.Y * pictureBox1.Image.Height / (double)pictureBox1.Height) + pt.Y);
 
+            Bitmap RectIndex = img1_backup.Clone(new Rectangle(0, 0, img1_backup.Width, img1_backup.Height), PixelFormat.Format32bppArgb);
+            Color G = Color.FromArgb(255, 0, 0);
+
+            if (ZoomImageRectIndex == null || ZoomImageRectIndex.IsDisposed)
+            {
+
+                ZoomImageRectIndex = new Form2(RectIndex);
+                ZoomImageRectIndex.Owner = this;
+                ZoomImageRectIndex.Show();
+            }
+            else if (ZoomImageRectIndex != null) // Picture1 2번째 누를때 부터 
+            {
+                if (e.Button == MouseButtons.Left)     // 확대
+                {
+                    zoomRatio1 *= 0.90;
+                    int zoomSize = (int)(zoomRatio1 * 100);
+                    Bitmap zoomImage = new Bitmap(zoomSize, zoomSize);
+                    pt.X = newX - (zoomSize / 2);
+                    pt.Y = newY - (zoomSize / 2);
+
+                    for (int i = -zoomSize / 2; i < zoomSize / 2; ++i)
+                        for (int j = -zoomSize / 2; j < zoomSize / 2; ++j)
+                        {
+                            if (((newX + (zoomRatio1 * i)) > img1_backup.Width - 1) || ((newY + (zoomRatio1 * j))) >= img1_backup.Height - 1 || ((newX + (zoomRatio1 * i)) < 0) || ((newY + (zoomRatio1 * j))) < 0)
+                            {
+
+                                continue;
+                            }
+                            else
+                            {
+                                zoomImage.SetPixel(zoomSize / 2 + i, zoomSize / 2 + j, img1_backup.GetPixel((int)(newX + (zoomRatio1 * i)), (int)(newY + (zoomRatio1 * j)))); // 줌이미지
+
+                                if ((-zoomSize / 2 <= i && i < zoomSize / 2) && (j == -zoomSize / 2 || j == zoomSize / 2 - 1) || (-zoomSize / 2 <= j && j < zoomSize / 2) && (i == -zoomSize / 2 || i == zoomSize / 2 - 1))
+                                {
+                                    RectIndex.SetPixel((int)(double)(newX + (zoomRatio1 * i)), (int)(double)(newY + (zoomRatio1 * j)), G);   // 원본에 사각 인덱스 표시
+                                }
+                            }
+                        }
+                    pictureBox1.Image = zoomImage;
+                }
+                else if (e.Button == MouseButtons.Right)     // 축소
+                {
+                    zoomRatio1 *= 1.1;
+                    int zoomSize = (int)(zoomRatio1 * 100);
+                    Bitmap zoomImage = new Bitmap(zoomSize, zoomSize);
+                    pt.X = newX - (zoomSize / 2);
+                    pt.Y = newY - (zoomSize / 2);
+
+                    for (int i = -zoomSize / 2; i < zoomSize / 2; ++i)
+                        for (int j = -zoomSize / 2; j < zoomSize / 2; ++j)
+                        {
+
+                            if (((newX + (zoomRatio1 * i)) < 0) || ((newY + (zoomRatio1 * j))) < 0 || ((newX + (zoomRatio1 * i)) >= img1_backup.Width) || ((newY + (zoomRatio1 * j))) >= img1_backup.Height)
+                            {
+                                //if (((newX + (zoomRatio1 * i)) <0) && ((newY + (zoomRatio1 * j))) <0)           ////220801_21:10_YTJ  내일 가서 추가코딩 하려고 주석처리하였음
+                                //{
+                                //    pictureBox1.Image = null;
+                                //    //zoomSize = 1;
+                                //}
+                                //else
+                                continue;
+                            }
+                            else
+                            {
+                                zoomImage.SetPixel(zoomSize / 2 + i, zoomSize / 2 + j, img1_backup.GetPixel((int)(newX + (zoomRatio1 * i)), (int)(newY + (zoomRatio1 * j)))); // 줌이미지
+
+                                if ((-zoomSize / 2 <= i && i < zoomSize / 2) && (j == -zoomSize / 2 || j == zoomSize / 2 - 1) || (-zoomSize / 2 <= j && j < zoomSize / 2) && (i == -zoomSize / 2 || i == zoomSize / 2 - 1))
+                                {
+                                    RectIndex.SetPixel((int)(double)(newX + (zoomRatio1 * i)), (int)(double)(newY + (zoomRatio1 * j)), G);   // 원본에 사각 인덱스 표시
+                                }
+                            }
+                        }
+                    pictureBox1.Image = zoomImage;
+                }
+                ZoomImageRectIndex.Bitmap = RectIndex;
+            }
+        }
+        private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
+        {
+            int newX = (int)(((double)e.X * pictureBox2.Image.Width / (double)pictureBox2.Width) + pt.X);
+            int newY = (int)(((double)e.Y * pictureBox2.Image.Height / (double)pictureBox2.Height) + pt.Y);
+
+            Bitmap RectIndex = img1_backup.Clone(new Rectangle(0, 0, img1_backup.Width, img1_backup.Height), PixelFormat.Format32bppArgb);
+            Color G = Color.FromArgb(255, 0, 0);
+
+            if (ZoomImageRectIndex == null || ZoomImageRectIndex.IsDisposed)
+            {
+
+                ZoomImageRectIndex = new Form2(RectIndex);
+                ZoomImageRectIndex.Owner = this;
+                ZoomImageRectIndex.Show();
+            }
+            else if (ZoomImageRectIndex != null) // Picture1 2번째 누를때 부터 
+            {
+                if (e.Button == MouseButtons.Left)     // 확대
+                {
+                    zoomRatio2 *= 0.97;
+                    int zoomSize = (int)(zoomRatio2 * 260);
+                    Bitmap zoomImage = new Bitmap(zoomSize, zoomSize);
+                    pt.X = newX - (zoomSize / 2);
+                    pt.Y = newY - (zoomSize / 2);
+
+                    for (int i = -zoomSize / 2; i < zoomSize / 2; ++i)
+                        for (int j = -zoomSize / 2; j < zoomSize / 2; ++j)
+                        {
+                            if (((newX + (zoomRatio2 * i)) > img1_backup.Width) || ((newY + (zoomRatio2 * j))) > img1_backup.Height || ((newX + (zoomRatio2 * i)) < 0) || ((newY + (zoomRatio2 * j))) < 0)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                zoomImage.SetPixel(zoomSize / 2 + i, zoomSize / 2 + j, img1_backup.GetPixel((int)(newX + (zoomRatio2 * i)), (int)(newY + (zoomRatio2 * j)))); // 줌이미지
+                            }
+                            if ((-zoomSize / 2 <= i && i < zoomSize / 2) && (j == -zoomSize / 2 || j == zoomSize / 2 - 1) || (-zoomSize / 2 <= j && j < zoomSize / 2) && (i == -zoomSize / 2 || i == zoomSize / 2 - 1))
+                            {
+                                RectIndex.SetPixel((int)(double)(newX + (zoomRatio2 * i)), (int)(double)(newY + (zoomRatio2 * j)), G);   // 원본에 사각 인덱스 표시
+                            }
+
+                        }
+                    pictureBox2.Image = zoomImage;
+                }
+                else if (e.Button == MouseButtons.Right)     // 축소
+                {
+                    zoomRatio2 *= 1.03;
+                    int zoomSize = (int)(zoomRatio2 * 260);
+                    Bitmap zoomImage = new Bitmap(zoomSize, zoomSize);
+                    pt.X = newX - (zoomSize / 2);
+                    pt.Y = newY - (zoomSize / 2);
+
+                    for (int i = -zoomSize / 2; i < zoomSize / 2; ++i)
+                        for (int j = -zoomSize / 2; j < zoomSize / 2; ++j)
+                        {
+                            if (((newX + (zoomRatio2 * i)) < 0) || ((newY + (zoomRatio2 * j))) < 0 || ((newX + (zoomRatio2 * i)) >= img1_backup.Width) || ((newY + (zoomRatio2 * j))) >= img1_backup.Height)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                zoomImage.SetPixel(zoomSize / 2 + i, zoomSize / 2 + j, img1_backup.GetPixel((int)(newX + (zoomRatio2 * i)), (int)(newY + (zoomRatio2 * j)))); // 줌이미지
+                            }
+                            if ((-zoomSize / 2 <= i && i < zoomSize / 2) && (j == -zoomSize / 2 || j == zoomSize / 2 - 1) || (-zoomSize / 2 <= j && j < zoomSize / 2) && (i == -zoomSize / 2 || i == zoomSize / 2 - 1))
+                            {
+                                RectIndex.SetPixel((int)(double)(newX + (zoomRatio2 * i)), (int)(double)(newY + (zoomRatio2 * j)), G);   // 원본에 사각 인덱스 표시
+                            }
+
+                        }
+                    pictureBox2.Image = zoomImage;
+                }
+                ZoomImageRectIndex.Bitmap = RectIndex;
+            }
+        }
+
+    }
 }
+
