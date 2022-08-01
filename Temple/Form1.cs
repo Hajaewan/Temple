@@ -14,6 +14,11 @@ namespace Temple
         Bitmap img1_backup;
         Bitmap img2_backup;
 
+        //수정사항 1. 픽쳐2에 마우스올라갈시 오류    2. form1 ,2 의 표시 바꾸기 3. form2의 표시사항 
+        private int ClickCount = 0;
+        private double zoomRatio = 1.0;
+        private Form2 ZoomImageRectIndex = null;
+
         public Form1()
         {
             InitializeComponent();
@@ -39,7 +44,7 @@ namespace Temple
 
                     origin1 = new Bitmap(ofd1.FileName);                            /////////20220801_09:06 hjw 수정
                     Bitmap Copy_origin1 = new Bitmap(origin1.Width, origin1.Height);
-                    CopyImage(origin1,ref Copy_origin1);
+                    CopyImage(origin1, ref Copy_origin1);
                     pictureBox1.Image = Copy_origin1;
                     img1_backup = Copy_origin1;
                     if (pictureBox2.Image == null)
@@ -49,6 +54,7 @@ namespace Temple
                 }
             }
         }
+
         private void Btn_Read2_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd2 = new OpenFileDialog())
@@ -73,12 +79,14 @@ namespace Temple
                 }
             }
         }
+
         public void LaplacianFilter(Bitmap bm, byte[] buf)
         {
             byte[] C = new byte[bm.Width * bm.Height];
             byte[] C2 = buf;
             for (int i = 0; i < bm.Height; ++i)
             {
+                progressBar1.Value = i + 1;
                 for (int j = 0; j < bm.Width; ++j)
                 {
                     for (int x = -1; x < 2; ++x)
@@ -120,6 +128,7 @@ namespace Temple
                 }
             }
         }
+
         public void GaussianFilter(Bitmap bm, byte[] buf)
         {
             byte[] C = new byte[bm.Width * bm.Height];
@@ -127,6 +136,7 @@ namespace Temple
 
             for (int i = 0; i < bm.Height; ++i)
             {
+                progressBar1.Value = i + 1;
                 for (int j = 0; j < bm.Width; ++j)
                 {
                     for (int x = -1; x < 2; ++x)
@@ -167,6 +177,7 @@ namespace Temple
                 }
             }
         }
+
         public void MakeBuf(Bitmap bm, byte[] buf)
         {
             for (int i = 0; i < bm.Height; ++i)
@@ -175,7 +186,8 @@ namespace Temple
                     buf[i * bm.Height + j] = bm.GetPixel(i, j).R;
                 }
         }
-        private void CopyImage(Bitmap ori,ref Bitmap copy)
+
+        private void CopyImage(Bitmap ori, ref Bitmap copy)
         {
             int w = ori.Width;
             int h = ori.Height;
@@ -192,13 +204,16 @@ namespace Temple
             //    }
             //}
         }
+
         private void Btn_Dilation_Click(object sender, EventArgs e)
         {
             int w = ((Bitmap)pictureBox1.Image).Width;
             int h = ((Bitmap)pictureBox1.Image).Height;
+            InitProgressBar(w);
 
             for (int i = 0; i < w * h; ++i)
             {
+                progressBar1.Value = (i / h) + 1;
                 byte max = 0;
                 for (int py = -1; py <= 1; ++py)
                 {
@@ -229,8 +244,11 @@ namespace Temple
         {
             int w = ((Bitmap)pictureBox1.Image).Width;
             int h = ((Bitmap)pictureBox1.Image).Height;
+            InitProgressBar(w);
+
             for (int i = 0; i < w * h; ++i)
             {
+                progressBar1.Value = (i / h) + 1;
                 byte min = 255;
                 for (int py = -1; py <= 1; ++py)
                 {
@@ -327,10 +345,11 @@ namespace Temple
             int h = ((Bitmap)pictureBox1.Image).Height;
             byte[] C = new byte[w * h];
             byte[] C2 = new byte[w * h];
+            InitProgressBar(w);
 
             MakeBuf((Bitmap)pictureBox1.Image, C2);
-            GaussianFilter((Bitmap)pictureBox1.Image, C2);
-            pictureBox2.Image = (Bitmap)pictureBox1.Image;
+            GaussianFilter((Bitmap)pictureBox2.Image, C2);
+            pictureBox2.Image = (Bitmap)pictureBox2.Image;
         }
 
         private void Btn_Laplacian_Click(object sender, EventArgs e)
@@ -343,9 +362,11 @@ namespace Temple
             int h = ((Bitmap)pictureBox1.Image).Height;
             byte[] C = new byte[w * h];
             byte[] C2 = new byte[w * h];
+            InitProgressBar(w);
+
             MakeBuf((Bitmap)pictureBox1.Image, C2);
-            LaplacianFilter((Bitmap)pictureBox1.Image, C2);
-            pictureBox2.Image = (Bitmap)pictureBox1.Image;
+            LaplacianFilter((Bitmap)pictureBox2.Image, C2);
+            pictureBox2.Image = (Bitmap)pictureBox2.Image;
         }
 
         private void Btn_Save1_Click(object sender, EventArgs e)
@@ -366,12 +387,6 @@ namespace Temple
             }
         }
 
-
-
-        //수정사항 1. 픽쳐2에 마우스올라갈시 오류    2. form1 ,2 의 표시 바꾸기 3. form2의 표시사항 
-        private int ClickCount = 0;
-        private double zoomRatio = 1.0;
-        private Form2 ZoomImageRectIndex = null;
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             //pictureBox1.Load(file_path);
@@ -383,7 +398,7 @@ namespace Temple
             Bitmap zoomImage = new Bitmap(260, 260);
             Bitmap originImage = (Bitmap)pictureBox1.Image;
             Bitmap RectIndex = originImage.Clone(new Rectangle(0, 0, originImage.Width, originImage.Height), PixelFormat.Format32bppArgb);
-            Color G = Color.FromArgb( 255, 0, 0);
+            Color G = Color.FromArgb(255, 0, 0);
 
             if (ZoomImageRectIndex == null)
             {
@@ -452,6 +467,8 @@ namespace Temple
         {
             int row = ((Bitmap)pictureBox1.Image).Height;
             int col = ((Bitmap)pictureBox1.Image).Width;
+            InitProgressBar(col);
+
             //filename = "Equalization.bmp";
             Bitmap bmp = new Bitmap(row, col);
             double[] histogram = new double[256];
@@ -484,6 +501,7 @@ namespace Temple
             }
             for (int i = 0; i < row; ++i)
             {
+                progressBar1.Value = i + 1;
                 for (int j = 0; j < col; ++j)
                 {
                     byte color = (byte)New[((Bitmap)pictureBox1.Image).GetPixel(i, j).R];
@@ -498,6 +516,7 @@ namespace Temple
         {
             int row = pictureBox1.Image.Height;
             int col = pictureBox1.Image.Width;
+            InitProgressBar(col);
             //filename = "Otsu.bmp";
             Bitmap bmp = new Bitmap(row, col);
             double[] histogram = new double[256];
@@ -542,6 +561,8 @@ namespace Temple
             }
             for (int i = 0; i < row; ++i)
             {
+                progressBar1.Value = i + 1;
+
                 for (int j = 0; j < col; ++j)
                 {
                     if (((Bitmap)pictureBox1.Image).GetPixel(i, j).R >= t)
@@ -565,6 +586,7 @@ namespace Temple
             int Templateheight = ((Bitmap)pictureBox1.Image).Height;
             int mewidth = ((Bitmap)pictureBox2.Image).Height;
             int meheight = ((Bitmap)pictureBox2.Image).Width;
+            InitProgressBar(mewidth - Templatewidth);
             //filename = "Equalization.bmp";
             Bitmap bmp = new Bitmap(mewidth, meheight);
             byte[] data = new byte[mewidth * meheight];
@@ -590,6 +612,7 @@ namespace Temple
 
             for (int y = 0; y < mewidth - Templatewidth; ++y)
             {
+                progressBar1.Value = (y / (mewidth - Templatewidth)) + 1;
                 for (int x = 0; x < meheight - Templateheight; ++x)
                 {
                     for (int i = 0; i < Templatewidth; ++i)
@@ -621,6 +644,12 @@ namespace Temple
             }
 
             pictureBox2.Image = bmp;
+        }
+
+        private void InitProgressBar(int w)
+        {
+            progressBar1.Maximum = w;
+            progressBar1.Value = 0;
         }
     }
 
