@@ -18,7 +18,7 @@ namespace Temple
         {
             InitializeComponent();
         }
-        string file_path = "";
+        //string file_path = ""; //20220801_09:26 hjw 수정
         private void Btn_Read1_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd1 = new OpenFileDialog())
@@ -27,19 +27,28 @@ namespace Temple
 
                 if (ofd1.ShowDialog() == DialogResult.OK)
                 {
-                    file_path = ofd1.FileName;
-                    string file_name = Path.GetFileName(file_path);
-                    pictureBox1.Load(file_path);
-                    Bitmap originImage = (Bitmap)pictureBox1.Image;
-                    Bitmap originImage_copy = CopyImage(originImage);
+                    //file_path = ofd1.FileName;
+                    //string file_name = Path.GetFileName(file_path);
+                    //pictureBox1.Load(file_path);
+                    //Bitmap originImage = (Bitmap)pictureBox1.Image;
+                    //Bitmap originImage_copy = CopyImage(originImage);
+                    //if (pictureBox2.Image == null)
+                    //{
+                    //    pictureBox2.Image = new Bitmap(originImage.Width, originImage.Height);
+                    //}
+
+                    origin1 = new Bitmap(ofd1.FileName);                            /////////20220801_09:06 hjw 수정
+                    Bitmap Copy_origin1 = new Bitmap(origin1.Width, origin1.Height);
+                    CopyImage(origin1,ref Copy_origin1);
+                    pictureBox1.Image = Copy_origin1;
+                    img1_backup = Copy_origin1;
                     if (pictureBox2.Image == null)
                     {
-                        pictureBox2.Image = new Bitmap(originImage.Width, originImage.Height);
+                        pictureBox2.Image = new Bitmap(origin1.Width, origin1.Height);
                     }
                 }
             }
         }
-
         private void Btn_Read2_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd2 = new OpenFileDialog())
@@ -47,9 +56,20 @@ namespace Temple
                 ofd2.InitialDirectory = Directory.GetCurrentDirectory();
                 if (ofd2.ShowDialog() == DialogResult.OK)
                 {
-                    file_path = ofd2.FileName;
-                    string file_name = Path.GetFileName(file_path);
-                    pictureBox2.Load(file_path);
+                    //file_path = ofd2.FileName;
+                    //string file_name = Path.GetFileName(file_path);
+                    //pictureBox2.Load(file_path);
+
+
+                    origin2 = new Bitmap(ofd2.FileName);                            ////20220801_09:07 hjw 수정
+                    Bitmap Copy_origin2 = new Bitmap(origin2.Width, origin2.Height);
+                    CopyImage(origin2, ref Copy_origin2);
+                    pictureBox2.Image = Copy_origin2;
+                    img2_backup = Copy_origin2;
+                    if (pictureBox1.Image == null)
+                    {
+                        pictureBox1.Image = new Bitmap(origin1.Width, origin1.Height);
+                    }
                 }
             }
         }
@@ -155,14 +175,22 @@ namespace Temple
                     buf[i * bm.Height + j] = bm.GetPixel(i, j).R;
                 }
         }
-        private Bitmap CopyImage(Bitmap ori)
+        private void CopyImage(Bitmap ori,ref Bitmap copy)
         {
             int w = ori.Width;
             int h = ori.Height;
 
-            Bitmap copy = ori.Clone(new Rectangle(0, 0, w, h), PixelFormat.Format32bppArgb);
-            return copy;
+            copy = ori.Clone(new Rectangle(0, 0, w, h), PixelFormat.Format32bppArgb);
 
+            //int val = 0;
+            //for (int i = 0; i < h; ++i)
+            //{
+            //    for (int j = 0; j < w; ++j)
+            //    {
+            //        val = ori.GetPixel(i, j).R;
+            //        copy.SetPixel(i, j, Color.FromArgb(val, val, val));
+            //    }
+            //}
         }
         private void Btn_Dilation_Click(object sender, EventArgs e)
         {
@@ -291,30 +319,33 @@ namespace Temple
 
         private void Btn_Guassian_Click(object sender, EventArgs e)
         {
-            Bitmap originImage = (Bitmap)pictureBox1.Image;
-            Bitmap originImage_copy = CopyImage(originImage);
+            //Bitmap originImage = (Bitmap)pictureBox1.Image;  
+            //Bitmap originImage_copy = CopyImage(originImage);   
+            //20220801_09:21 hjw 수정
 
             int w = ((Bitmap)pictureBox1.Image).Width;
             int h = ((Bitmap)pictureBox1.Image).Height;
             byte[] C = new byte[w * h];
             byte[] C2 = new byte[w * h];
-            MakeBuf(originImage_copy, C2);
-            GaussianFilter(originImage_copy, C2);
-            pictureBox2.Image = originImage_copy;
+
+            MakeBuf((Bitmap)pictureBox1.Image, C2);
+            GaussianFilter((Bitmap)pictureBox1.Image, C2);
+            pictureBox2.Image = (Bitmap)pictureBox1.Image;
         }
 
         private void Btn_Laplacian_Click(object sender, EventArgs e)
         {
-            Bitmap originImage = (Bitmap)pictureBox1.Image;
-            Bitmap originImage_copy = CopyImage(originImage);
+            //Bitmap originImage = (Bitmap)pictureBox1.Image;
+            //Bitmap originImage_copy = CopyImage(originImage);
+            //20220801_09:21 hjw 수정
 
             int w = ((Bitmap)pictureBox1.Image).Width;
             int h = ((Bitmap)pictureBox1.Image).Height;
             byte[] C = new byte[w * h];
             byte[] C2 = new byte[w * h];
-            MakeBuf(originImage_copy, C2);
-            LaplacianFilter(originImage_copy, C2);
-            pictureBox2.Image = originImage_copy;
+            MakeBuf((Bitmap)pictureBox1.Image, C2);
+            LaplacianFilter((Bitmap)pictureBox1.Image, C2);
+            pictureBox2.Image = (Bitmap)pictureBox1.Image;
         }
 
         private void Btn_Save1_Click(object sender, EventArgs e)
@@ -343,7 +374,8 @@ namespace Temple
         private Form2 ZoomImageRectIndex = null;
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            pictureBox1.Load(file_path);
+            //pictureBox1.Load(file_path);
+            pictureBox1.Image = img1_backup; //20220801_09:08 hjw 수정
 
             double ratio = (double)512 / (double)260;
             int newX = (int)((double)e.X * ratio);
