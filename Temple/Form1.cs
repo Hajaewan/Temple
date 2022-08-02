@@ -222,6 +222,7 @@ namespace Temple
             }
             pictureBox2.Image = Copyimg;
             pictureBox2.Refresh();
+            img2_backup = Copyimg;
         }
 
         private void Btn_Erosion_Click(object sender, EventArgs e)
@@ -259,6 +260,8 @@ namespace Temple
             }
             pictureBox2.Image = Copyimg;
             pictureBox2.Refresh();
+            img2_backup = Copyimg;
+
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -343,6 +346,8 @@ namespace Temple
             MakeBuf((Bitmap)pictureBox1.Image, C2);
             GaussianFilter((Bitmap)Copyimg, C2);
             pictureBox2.Image = (Bitmap)Copyimg;
+            img2_backup = Copyimg;
+
 
         }
         private void Btn_Laplacian_Click(object sender, EventArgs e)
@@ -361,6 +366,8 @@ namespace Temple
             MakeBuf((Bitmap)pictureBox1.Image, C2);
             LaplacianFilter((Bitmap)Copyimg, C2);
             pictureBox2.Image = (Bitmap)Copyimg;
+            img2_backup = Copyimg;
+
         }
 
         private void Btn_Save1_Click(object sender, EventArgs e)
@@ -427,6 +434,8 @@ namespace Temple
             }
 
             pictureBox2.Image = bmp;
+            img2_backup = bmp;
+
         }
 
         private void Btn_Otsu_Click(object sender, EventArgs e)
@@ -494,6 +503,8 @@ namespace Temple
                 }
             }
             pictureBox2.Image = bmp;
+            img2_backup = bmp;
+
         }
 
         private void Btn_Matching_Click(object sender, EventArgs e)
@@ -729,7 +740,7 @@ namespace Temple
                     for (int i = -zoomSize / 2; i < zoomSize / 2; ++i)
                         for (int j = -zoomSize / 2; j < zoomSize / 2; ++j)
                         {
-                            zoomImage.SetPixel(zoomSize / 2 + i, zoomSize / 2 + j, img1_backup.GetPixel((int)(newX + i), (int)(newY + j))); // 줌이미지
+                            zoomImage.SetPixel(zoomSize / 2 + i, zoomSize / 2 + j, img2_backup.GetPixel((int)(newX + i), (int)(newY + j))); // 줌이미지
 
                             if ((-zoomSize / 2 <= i && i < zoomSize / 2) && (j == -zoomSize / 2 || j == zoomSize / 2 - 1) || (-zoomSize / 2 <= j && j < zoomSize / 2) && (i == -zoomSize / 2 || i == zoomSize / 2 - 1))
                             {
